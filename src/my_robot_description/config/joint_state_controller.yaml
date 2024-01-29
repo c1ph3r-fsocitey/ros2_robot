@@ -1,0 +1,6 @@
+front_wheels_controller:
+  type: joint_state_controller/JointStateController
+  joints:
+    - front_right_wheel_joint
+    - front_left_wheel_joint
+  publish_rate: 50

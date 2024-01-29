@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<launch>
+
+    <arg name="use_sim_time" default="false"/>
+
+    <let name="urdf_path" 
+         value="$(find my_robot_description)/urdf/my_robot.urdf.xacro"/>
+
+    <let name="rviz_config_path"
+         value="$(find my_robot_description)/rviz/urdf_config.rviz" />
+
+    <let name="joint_state_controller_path"
+         value="$(find my_robot_description)/config/joint_state_controller.yaml" />
+
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description" 
+        value="$(command 'xacro $(var urdf_path)')"/>
+    </node>
+    
+    <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui" />
+
+    <node pkg="rviz2" exec="rviz2" output="screen" 
+          args="-d $(var rviz_config_path)" />
+
+    <!-- Add the joint state controller and parameter server here -->
+    <node
+       pkg="controller_manager"
+       exec="ros2_control_node"
+       name="ros2_control_node"
+       output="screen">
+       <param name="use_sim_time" value="$(var use_sim_time)"/>
+       <param name="robot_description" value="$(command 'xacro $(var urdf_path)')"/>
+       <param name="controller_manager_namespaces" value="front_wheels_controller"/>
+    </node>
+     
+    <ros2_control_parameter_server
+       name="ros2_control_parameter_server"
+       joint_state_controller="$(var joint_state_controller_path)">
+    </ros2_control_parameter_server>
+
+</launch>
