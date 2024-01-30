@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+    <link name="laser_frame2">
+        <visual>
+            <geometry>
+                <box size="0.01 0.03 0.03"/>
+            </geometry>
+            <material name="red"/>
+        </visual>
+        
+    </link>
+
+    <joint name="laser_joint2" type="fixed">
+        <parent link="chassis_link"/>
+        <child link="laser_frame2"/>
+        <origin xyz="0.305 0.075 0.08" rpy="0 0 0"/>
+    </joint>
+
+    <gazebo reference="laser_frame2">
+        <material>Gazebo/Red</material>
+
+        <sensor name="laser2" type="ray">
+            <pose> 0 0 0 0 0 0 </pose>
+            <visualize>true</visualize>
+            <update_rate>10</update_rate>
+            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>10</samples>
+                        <min_angle>-0.174</min_angle>
+                        <max_angle>0.174</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.03</min>
+                    <max>4.0</max>
+                </range>
+            </ray>
+            <plugin name="laser_controller2" filename="libgazebo_ros_ray_sensor.so">
+                <ros>
+                    <argument>~/out:=scan2</argument>
+                </ros>
+                <output_type>sensor_msgs/LaserScan</output_type>
+                <frame_name>laser_frame2</frame_name>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+</robot>
